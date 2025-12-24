@@ -1,41 +1,367 @@
 <!DOCTYPE html>
-<html lang="zh - CN">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF - 8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello 页面</title>
+    <title>Visual Story | 顶级摄影艺术空间</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide 图标库 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+SC:wght@300;400;700&display=swap');
+        
+        :root {
+            --accent: #a8a29e;
+        }
+
         body {
-            font-family: Arial, sans - serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            font-family: 'Noto Sans SC', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #0c0c0c;
+            color: #f5f5f5;
         }
-       .hello - container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
+
+        .serif { font-family: 'Playfair Display', serif; }
+
+        /* 隐藏滚动条 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 进场动画 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
         }
-       .hello - text {
-            font-size: 36px;
-            color: #333;
-            margin-bottom: 20px;
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
-       .description {
-            color: #666;
-            font-size: 18px;
+
+        /* 视差遮罩 */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
+
+        /* 自定义灯箱动画 */
+        #lightbox { transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* 字母间距 */
+        .tracking-ultra { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
     </style>
 </head>
 <body>
-    <div class="hello - container">
-        <div class="hello - text">Hello</div>
-        <div class="description">你好 lujia</div>
+
+    <!-- 全屏加载层 (可选增强) -->
+
+    <!-- 极简导航 -->
+    <nav class="fixed top-0 w-full z-[100] transition-all duration-500 px-8 py-6" id="navbar">
+        <div class="max-w-[1800px] mx-auto flex items-center justify-between">
+            <a href="#" class="serif text-2xl font-bold tracking-[0.3em] uppercase">Visual Story</a>
+            <div class="hidden lg:flex space-x-12 text-[10px] font-bold uppercase tracking-[0.4em]">
+                <a href="#gallery" class="link-hover transition hover:text-stone-400">Works / 作品</a>
+                <a href="#services" class="link-hover transition hover:text-stone-400">Services / 服务</a>
+                <a href="#about" class="link-hover transition hover:text-stone-400">Vision / 理念</a>
+                <a href="#contact" class="link-hover transition hover:text-stone-400">Contact / 联络</a>
+            </div>
+            <button class="lg:hidden">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 沉浸式首屏 -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0 scale-110">
+            <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=2500" 
+                 alt="Main Visual" 
+                 class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#0c0c0c]"></div>
+        </div>
+        
+        <div class="relative z-10 text-center px-4 max-w-5xl">
+            <h2 class="serif italic text-xl md:text-2xl mb-6 tracking-widest text-stone-400 reveal">Beyond the Lens</h2>
+            <h1 class="serif text-6xl md:text-[9rem] leading-none mb-8 reveal" style="transition-delay: 0.2s;">捕捉光影<br>的诗意</h1>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 mt-12 reveal" style="transition-delay: 0.4s;">
+                <a href="#gallery" class="px-10 py-4 bg-white text-black text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-stone-200 transition">探索作品集</a>
+                <span class="text-stone-500 hidden md:inline">/</span>
+                <p class="text-stone-400 text-sm tracking-widest italic font-light">记录每一个不被定义的瞬间</p>
+            </div>
+        </div>
+
+        <!-- 滚动提示 -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center animate-bounce opacity-40">
+            <span class="text-[8px] uppercase tracking-[0.5em] mb-4">Scroll</span>
+            <div class="w-[1px] h-12 bg-white"></div>
+        </div>
+    </section>
+
+    <!-- 品牌理念/数字 -->
+    <section class="py-32 px-8 max-w-[1800px] mx-auto">
+        <div class="grid lg:grid-cols-2 gap-24 items-center">
+            <div class="reveal">
+                <h3 class="serif text-5xl md:text-7xl leading-tight mb-12">用艺术家的视角<br>解构平凡世界</h3>
+                <p class="text-stone-400 text-lg leading-relaxed max-w-xl font-light">
+                    我们不只是在拍照，而是在构建一种叙事。每一张照片都是对时空的一次精准截取，旨在触及那些隐藏在光影交错下的情感张力。
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-8 reveal" style="transition-delay: 0.3s;">
+                <div class="border-l border-stone-800 p-8">
+                    <span class="serif text-5xl block mb-2">120+</span>
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-stone-500">合作艺术品牌</span>
+                </div>
+                <div class="border-l border-stone-800 p-8">
+                    <span class="serif text-5xl block mb-2">15</span>
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-stone-500">国际摄影奖项</span>
+                </div>
+                <div class="border-l border-stone-800 p-8">
+                    <span class="serif text-5xl block mb-2">08</span>
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-stone-500">全球巡回展出</span>
+                </div>
+                <div class="border-l border-stone-800 p-8">
+                    <span class="serif text-5xl block mb-2">10k+</span>
+                    <span class="text-[10px] uppercase tracking-[0.3em] text-stone-500">瞬间捕捉记录</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 策展画廊 -->
+    <section id="gallery" class="py-20 bg-[#111]">
+        <div class="px-8 max-w-[1800px] mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                <div class="reveal">
+                    <h2 class="serif text-6xl mb-4">策展作品</h2>
+                    <p class="text-stone-500 tracking-[0.2em] uppercase text-xs">Curated Works 2023-2025</p>
+                </div>
+                <div class="flex space-x-8 text-[10px] font-bold uppercase tracking-[0.3em] no-scrollbar reveal">
+                    <button class="filter-btn text-white" data-filter="all underline underline-offset-8">All</button>
+                    <button class="filter-btn text-stone-500 hover:text-white" data-filter="landscape">Landscape</button>
+                    <button class="filter-btn text-stone-500 hover:text-white" data-filter="portrait">Portrait</button>
+                    <button class="filter-btn text-stone-500 hover:text-white" data-filter="commercial">Architecture</button>
+                </div>
+            </div>
+
+            <div id="gallery-grid" class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+                <!-- 作品 01 -->
+                <div class="gallery-item reveal group" data-category="landscape">
+                    <div class="relative overflow-hidden bg-stone-900 cursor-pointer" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?auto=format&fit=crop&q=80&w=1200" 
+                             alt="孤绝之境" class="w-full grayscale hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-105">
+                        <div class="absolute bottom-0 left-0 w-full p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-400">Nature / 2024</span>
+                            <h4 class="serif text-xl mt-2 text-white">孤绝之境</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 作品 02 -->
+                <div class="gallery-item reveal group" data-category="commercial" style="transition-delay: 0.1s;">
+                    <div class="relative overflow-hidden bg-stone-900 cursor-pointer" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200" 
+                             alt="几何尺度" class="w-full grayscale hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-105">
+                        <div class="absolute bottom-0 left-0 w-full p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-400">Arch / 2025</span>
+                            <h4 class="serif text-xl mt-2 text-white">几何尺度</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 作品 03 -->
+                <div class="gallery-item reveal group" data-category="portrait" style="transition-delay: 0.2s;">
+                    <div class="relative overflow-hidden bg-stone-900 cursor-pointer" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1200" 
+                             alt="眼底的深邃" class="w-full grayscale hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-105">
+                        <div class="absolute bottom-0 left-0 w-full p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-400">Human / 2024</span>
+                            <h4 class="serif text-xl mt-2 text-white">眼底的深邃</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 作品 04 -->
+                <div class="gallery-item reveal group" data-category="landscape">
+                    <div class="relative overflow-hidden bg-stone-900 cursor-pointer" onclick="openLightbox(this)">
+                        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=1200" 
+                             alt="晨曦破晓" class="w-full grayscale hover:grayscale-0 transition-all duration-1000 transform group-hover:scale-105">
+                        <div class="absolute bottom-0 left-0 w-full p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-black/80 to-transparent">
+                            <span class="text-[10px] uppercase tracking-widest text-stone-400">Nature / 2023</span>
+                            <h4 class="serif text-xl mt-2 text-white">晨曦破晓</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务领域 -->
+    <section id="services" class="py-32 px-8">
+        <div class="max-w-[1800px] mx-auto">
+            <div class="mb-24 reveal text-center">
+                <h2 class="serif text-6xl mb-6">合作领域</h2>
+                <p class="text-stone-500 tracking-[0.4em] uppercase text-xs">Services & Expertise</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-0 border border-stone-800">
+                <div class="p-16 hover:bg-stone-900 transition-colors border-r border-stone-800 reveal group">
+                    <span class="text-stone-700 serif text-2xl group-hover:text-white transition">01</span>
+                    <h4 class="serif text-3xl my-8">商业时尚 / Commercial</h4>
+                    <p class="text-stone-500 font-light leading-relaxed">为高端品牌、杂志、时装周提供具有国际化视野的视觉方案，将商业逻辑与艺术审美完美融合。</p>
+                </div>
+                <div class="p-16 hover:bg-stone-900 transition-colors border-r border-stone-800 reveal group" style="transition-delay: 0.1s;">
+                    <span class="text-stone-700 serif text-2xl group-hover:text-white transition">02</span>
+                    <h4 class="serif text-3xl my-8">个人肖像 / Portrait</h4>
+                    <p class="text-stone-500 font-light leading-relaxed">挖掘被拍摄者独特的内在张力，以极致的光影雕琢，留下足以对抗时间的生命切片。</p>
+                </div>
+                <div class="p-16 hover:bg-stone-900 transition-colors reveal group" style="transition-delay: 0.2s;">
+                    <span class="text-stone-700 serif text-2xl group-hover:text-white transition">03</span>
+                    <h4 class="serif text-3xl my-8">空间建筑 / Architecture</h4>
+                    <p class="text-stone-500 font-light leading-relaxed">用几何语言对话建筑灵魂。捕捉光线在材质上的跃迁，呈现静谧而宏大的空间美学。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于与愿景 (视差图) -->
+    <section id="about" class="relative h-[80vh] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=2500" 
+                 alt="Vision" class="w-full h-full object-cover grayscale opacity-30">
+        </div>
+        <div class="relative z-10 px-8 text-center max-w-4xl reveal">
+            <h3 class="serif text-4xl md:text-6xl mb-10 leading-tight">“好的照片不仅是所见之物的映射，更是灵魂的回响。”</h3>
+            <p class="text-[10px] uppercase tracking-[0.6em] text-stone-500">— Visual Story Studio</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-[#080808] pt-32 pb-16 px-8">
+        <div class="max-w-[1800px] mx-auto">
+            <div class="grid lg:grid-cols-2 gap-24 mb-32">
+                <div class="reveal">
+                    <h2 class="serif text-7xl md:text-[8rem] leading-none mb-12">开启您的<br>视觉序章</h2>
+                    <p class="text-stone-500 mb-12 max-w-md">我们每年仅接受有限量的深度拍摄合作，以确保每一组作品的艺术纯度。期待听到您的构思。</p>
+                    <div class="flex space-x-8">
+                        <a href="#" class="text-white hover:text-stone-400 transition"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="text-white hover:text-stone-400 transition"><i data-lucide="facebook"></i></a>
+                        <a href="#" class="text-white hover:text-stone-400 transition"><i data-lucide="behance"></i></a>
+                    </div>
+                </div>
+                <div class="reveal" style="transition-delay: 0.3s;">
+                    <form class="space-y-8">
+                        <div class="border-b border-stone-800 pb-4">
+                            <label class="block text-[8px] uppercase tracking-[0.4em] text-stone-500 mb-4">Your Name / 姓名</label>
+                            <input type="text" class="w-full bg-transparent outline-none text-xl serif placeholder-stone-800" placeholder="请输入您的称呼">
+                        </div>
+                        <div class="border-b border-stone-800 pb-4">
+                            <label class="block text-[8px] uppercase tracking-[0.4em] text-stone-500 mb-4">Inquiry / 意向</label>
+                            <input type="text" class="w-full bg-transparent outline-none text-xl serif placeholder-stone-800" placeholder="您感兴趣的拍摄领域">
+                        </div>
+                        <button type="submit" class="group flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.4em]">
+                            发送咨询 / Submit 
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-2 transition-transform"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center pt-16 border-t border-stone-900 text-[8px] uppercase tracking-[0.4em] text-stone-700">
+                <p>&copy; 2025 Visual Story Art Studio. All Rights Reserved.</p>
+                <div class="flex space-x-8 mt-4 md:mt-0">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 全屏大图灯箱 -->
+    <div id="lightbox" class="fixed inset-0 z-[200] bg-black hidden opacity-0 flex items-center justify-center p-4">
+        <button class="absolute top-10 right-10 text-white hover:text-stone-400 transition" onclick="closeLightbox()">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <img id="lightbox-img" src="" class="max-h-[85vh] max-w-full object-contain shadow-2xl">
+        <div id="lightbox-caption" class="absolute bottom-10 left-10 serif text-white text-2xl tracking-widest"></div>
     </div>
+
+    <script>
+        // 初始化图标
+        lucide.createIcons();
+
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('bg-black/90', 'py-4', 'backdrop-blur-sm');
+                navbar.classList.remove('py-6');
+            } else {
+                navbar.classList.remove('bg-black/90', 'py-4', 'backdrop-blur-sm');
+                navbar.classList.add('py-6');
+            }
+        });
+
+        // 元素入场动画
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 筛选逻辑
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.add('text-stone-500'));
+                btn.classList.remove('text-stone-500');
+                btn.classList.add('text-white');
+
+                const filter = btn.getAttribute('data-filter').split(' ')[0];
+                galleryItems.forEach(item => {
+                    if (filter === 'all' || item.dataset.category === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 灯箱逻辑
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+
+        function openLightbox(el) {
+            const img = el.querySelector('img');
+            const title = el.querySelector('h4').textContent;
+            lightboxImg.src = img.src;
+            lightboxCaption.textContent = title;
+            lightbox.classList.remove('hidden');
+            setTimeout(() => lightbox.classList.add('opacity-100'), 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('opacity-100');
+            setTimeout(() => lightbox.classList.add('hidden'), 400);
+            document.body.style.overflow = '';
+        }
+
+        // 快捷键
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
 </body>
 </html>
